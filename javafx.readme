@@ -1,0 +1,15 @@
+
+To get JavaFX to work you need to supply some VM options.
+
+1. Click drop down menu in the toolbar above this window (to the right of the hammer)
+2. Select Edit Configurations.
+3. Select Application (that need JavaFX) in panel to the left.
+4. In field VM options: paste the below.
+
+--module-path /home/hajo/devel/java/javafx-sdk-13.0.1/lib --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media
+
+NOTE1: The path "/home/hajo/devel/java/javafx-sdk-13.0.1/lib" is specific
+for each user. You have to adjust to where you store your JavaFX library
+For STUDAT computers see course page for installed JavaFX
+
+NOTE2: You also need to add JavaFX as a library. See course page.
