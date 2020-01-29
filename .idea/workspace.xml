@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="bf4bff32-45c3-4c8b-b927-20a2e2ecdc1f" name="Default" comment="" />
+    <list default="true" id="bf4bff32-45c3-4c8b-b927-20a2e2ecdc1f" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Neighbours.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Neighbours.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,7 +30,7 @@
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1VBufnKJIOOEv0P2o9iA1ZoKR2J" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -42,7 +46,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit5" />
-    <property name="last_opened_file_path" value="C:/JAV/javafx-sdk-11.0.2/lib" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Global Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -253,10 +257,10 @@
     </state>
     <state x="139" y="100" width="1026" height="841" key="SettingsEditor/0.0.1248.1024@0.0.1248.1024" timestamp="1576743848046" />
     <state x="152" y="0" key="SettingsEditor/0.0.1366.728@0.0.1366.728" timestamp="1580116049992" />
-    <state x="378" y="197" key="com.intellij.ide.util.TipDialog" timestamp="1580117297129">
+    <state x="378" y="197" key="com.intellij.ide.util.TipDialog" timestamp="1580289627500">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="378" y="197" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1580117297129" />
+    <state x="378" y="197" key="com.intellij.ide.util.TipDialog/0.0.1366.728@0.0.1366.728" timestamp="1580289627500" />
     <state x="339" y="162" key="run.anything.popup" timestamp="1580205524860">
       <screen x="0" y="0" width="1366" height="728" />
     </state>

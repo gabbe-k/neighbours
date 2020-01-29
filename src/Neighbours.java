@@ -46,7 +46,15 @@ public class Neighbours extends Application {
         // % of surrounding neighbours that are like me
         double threshold = 0.7;
         setSatisfied(threshold);
-        
+
+        /////////////////////////////////////
+        //1. räkna antal dissatisfied blå, röd och hur många tomma platser
+        //2. gå igenom lista från början, vid tom plats, slumpa om en röd eller blå ska läggas
+        //3. kolla om satisfied
+        //4. gör igen
+        ///////////////////////////////////
+
+
         // TODO update world
     }
 
@@ -102,7 +110,7 @@ public class Neighbours extends Application {
                 }
 
                 out.println(world[i][j].isSatisfied + " at " + i + " " + j + ", stat=" + stat);
-
+                
             }
         }
     }
