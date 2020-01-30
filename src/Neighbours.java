@@ -10,8 +10,7 @@ import javafx.stage.Stage;
 import java.util.Arrays;
 import java.util.Random;
 
-import static java.lang.Math.round;
-import static java.lang.Math.sqrt;
+import static java.lang.Math.*;
 import static java.lang.System.*;
 
 /*
@@ -36,8 +35,6 @@ public class Neighbours extends Application {
 
     }
 
-    // Below is the *only* accepted instance variable (i.e. variables outside any method)
-    // This variable may *only* be used in methods init() and updateWorld()
     Actor[][] world;              // The world is a square matrix of Actors
 
     // This is the method called by the timer to update the world
@@ -45,17 +42,18 @@ public class Neighbours extends Application {
     void updateWorld() {
         // % of surrounding neighbours that are like me
         double threshold = 0.7;
-        setSatisfied(threshold);
+        world = setSatisfied(threshold, world);
+        int[] newPop = countDissatisfied(world);
+        out.println(Arrays.toString(newPop));
+        if (newPop[0] == 0 && newPop[1] == 0) {
+            out.println("All satisfied");
+            exit(0);
+        }
+        else {
+            world = distribute(world, newPop);
+            world = removeUnsatisfied(world);
+        }
 
-        /////////////////////////////////////
-        //1. räkna antal dissatisfied blå, röd och hur många tomma platser
-        //2. gå igenom lista från början, vid tom plats, slumpa om en röd eller blå ska läggas
-        //3. kolla om satisfied
-        //4. gör igen
-        ///////////////////////////////////
-
-
-        // TODO update world
     }
 
     // This method initializes the world variable with a random distribution of Actors
@@ -66,91 +64,141 @@ public class Neighbours extends Application {
         //test();    // <---------------- Uncomment to TEST!
 
         // %-distribution of RED, BLUE and NONE
-        double[] dist = {0.25, 0.25, 0.50};
-
+        double[] dist = {0.25, 0.25, 0.5};
         // Number of locations (places) in world (must be a square)
-        int nLocations = 900;   // Should also try 90 000
+        int nLocations = 90000;   // Should also try 90 000
         int sideLen    = (int) sqrt(nLocations);
-        Random rand = new Random();
 
         world = new Actor[sideLen][sideLen];
 
-        for (int i = 0; i < sideLen; i++) {
+        int[] population = {(int)(nLocations*dist[0]),  //Number of red
+                            (int)(nLocations*dist[1]),  //Number of blue
+                            (int)(nLocations*dist[2])}; //Number of available squares
 
-            for (int j = 0; j < sideLen; j++) {
+        //All squares are available in initiation
+        world = distribute(world, population);
 
-                double prob = rand.nextDouble();
-                if (prob < dist[0]) {
-                    world[i][j] = new Actor(Color.RED);
-                }
-                else if(prob < dist[2]) {
-                    world[i][j] = new Actor(Color.BLUE);
-                }
-
-            }
-
-        }
         fixScreenSize(nLocations);
     }
 
     // ---------------  Methods ------------------------------
 
-    void setSatisfied(double threshold) {
-        for (int i = 0; i < world.length; i++) {
-            for (int j = 0; j < world[i].length; j++) {
+    Actor[][] distribute(Actor[][] world, int[] pop) {
 
-                if (world[i][j] == null) continue;
+        Random rand = new Random();
 
-                double stat = scanNine(i,j, world[i][j].color, world);
-                if (stat < threshold) {
-                    world[i][j].isSatisfied = false;
+        for (int row = 0; row < world.length; row++) {
+            for (int col = 0; col < world[row].length; col++) {
+
+                int numPop = pop[0] + pop[1] + pop[2];
+
+                if (world[row][col] == null) {
+
+                    int index = rand.nextInt(numPop);
+                    if (index < pop[0]) {
+                        world[row][col] = new Actor(Color.RED);
+                        world[row][col].isSatisfied = true;
+                        pop[0]--;
+                    } else if (index < pop[0] + pop[1]) {
+                        world[row][col] = new Actor(Color.BLUE);
+                        world[row][col].isSatisfied = true;
+                        pop[1]--;
+                    } else {
+                        pop[2]--;
+                    }
                 }
-                else {
-                    world[i][j].isSatisfied = true;
-                }
 
-                out.println(world[i][j].isSatisfied + " at " + i + " " + j + ", stat=" + stat);
-                
             }
         }
+
+        return world;
+
     }
 
-    //REMOVW ACTORCOLOR SENARE
-    double scanNine(int y, int x, Color actorColor, Actor[][] tW){
+    Actor[][] removeUnsatisfied(Actor[][] world) {
+        for (int row = 0; row < world.length; row++) {
+            for (int col = 0; col < world.length; col++) {
+                if (world[row][col] != null && world[row][col].isSatisfied == false) {
+                    world[row][col] = null;
+                }
+            }
+        }
+        return world;
+    }
+
+    Actor[][] setSatisfied(double threshold, Actor[][] world) {
+        for (int row = 0; row < world.length; row++) {
+            for (int col = 0; col < world[row].length; col++) {
+
+                if (world[row][col] == null) continue;
+
+                double stat = scanNeighbours(row,col, world);
+                if (stat < threshold) {
+                    world[row][col].isSatisfied = false;
+                }
+                else {
+                    world[row][col].isSatisfied = true;
+                }
+
+            }
+        }
+        return world;
+    }
+
+    int[] countDissatisfied(Actor[][] world) {
+        int red = 0;
+        int blue = 0;
+        int empty = 0;
+
+        for (int row = 0; row < world.length; row++) {
+            for (int col = 0; col < world.length; col++) {
+                Actor act = world[row][col];
+
+                if (act == null) {
+                    empty++;
+                }
+                else {
+
+                    if (act.isSatisfied == false) {
+
+                        if (act.color == Color.BLUE){
+                            blue++;
+                        }
+                        else if(act.color == Color.RED) {
+                            red++;
+                        }
+
+                    }
+                }
+
+
+            }
+
+        }
+        int available = empty - red - blue;
+        return new int[] {red, blue, available};
+        
+    }
+
+    double scanNeighbours(int actorRow, int actorCol, Actor[][] world){
 
         int numAct = 0;
         int friends= 0;
+        Color actorColor = world[actorRow][actorCol].color;
 
-        int yStart = y-1;
-        int yEnd = (y + 1);
+        for (int row = actorRow-1; row <= actorRow+1; row++) {
 
-        int xStart = x-1;
-        int xEnd = (x + 1);
+            for (int col = actorCol-1; col <= actorCol+1; col++) {
 
-        if (y == 0) {
-            yStart = 0;
-        }
-        else if (y == tW.length-1) {
-            yEnd = y;
-        }
+                if (!isValidLocation(world.length,row,col) ||
+                    actorRow == row && actorCol == col     ||
+                    world[row][col] == null)
+                    continue;
 
-        if (x == 0){
-            xStart = 0;
-        }
-        else if (x == tW.length-1) {
-            xEnd = x;
-        }
-
-        for (int i = yStart; i <= yEnd; i++) {
-
-            for (int j = xStart; j <= xEnd; j++) {
-
-                if((y == i && x == j) || tW[i][j] == null) continue;
-
-                if (tW[i][j].color == actorColor) {
-                   friends++;
+                if (world[row][col].color == actorColor) {
+                    friends++;
                 }
-                if (tW[i][j].color == Color.BLUE || tW[i][j].color == Color.RED) {
+                if (world[row][col].color == Color.BLUE || world[row][col].color == Color.RED) {
                     numAct++;
                 }
 
@@ -158,20 +206,19 @@ public class Neighbours extends Application {
 
         }
 
-        if (numAct == 0) return 1;
+        if (numAct == 0) return 0;
 
         return (double)friends / (double)numAct;
         
     }
 
+
+    // ----------- Utility methods -----------------
+
     // Check if inside world
     boolean isValidLocation(int size, int row, int col) {
         return 0 <= row && row < size && 0 <= col && col < size;
     }
-
-    // ----------- Utility methods -----------------
-
-    // TODO (general method possible reusable elsewhere)
 
     // ------- Testing -------------------------------------
 
@@ -191,7 +238,7 @@ public class Neighbours extends Application {
         out.println(!isValidLocation(size, -1, 0));
         out.println(!isValidLocation(size, 0, 3));
 
-        out.println(scanNine(2,0, Color.RED, testWorld));
+        out.println(scanNeighbours(2,0, testWorld));
 
         // TODO
 
