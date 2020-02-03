@@ -47,7 +47,6 @@ public class Neighbours extends Application {
         out.println(Arrays.toString(newPop));
         if (newPop[0] == 0 && newPop[1] == 0) {
             out.println("All satisfied");
-            exit(0);
         }
         else {
             world = distribute(world, newPop);
@@ -87,24 +86,31 @@ public class Neighbours extends Application {
 
         Random rand = new Random();
 
+        //Number of unsatisfied red and blue actors
+        int red = pop[0];
+        int blue = pop[1];
+        //Number of non occupied empty squares
+        int remainingNull = pop[2];
+
         for (int row = 0; row < world.length; row++) {
             for (int col = 0; col < world[row].length; col++) {
 
-                int numPop = pop[0] + pop[1] + pop[2];
+                int popSum = red + blue + remainingNull;
 
+                //At every null square we either place a red, blue or leave it null
                 if (world[row][col] == null) {
 
-                    int index = rand.nextInt(numPop);
-                    if (index < pop[0]) {
+                    int index = rand.nextInt(popSum);
+                    if (index < red) {
                         world[row][col] = new Actor(Color.RED);
                         world[row][col].isSatisfied = true;
-                        pop[0]--;
-                    } else if (index < pop[0] + pop[1]) {
+                        red--;
+                    } else if (index < blue + red) {
                         world[row][col] = new Actor(Color.BLUE);
                         world[row][col].isSatisfied = true;
-                        pop[1]--;
+                        blue--;
                     } else {
-                        pop[2]--;
+                        remainingNull--;
                     }
                 }
 
@@ -118,7 +124,7 @@ public class Neighbours extends Application {
     Actor[][] removeUnsatisfied(Actor[][] world) {
         for (int row = 0; row < world.length; row++) {
             for (int col = 0; col < world.length; col++) {
-                if (world[row][col] != null && world[row][col].isSatisfied == false) {
+                if (world[row][col] != null && !world[row][col].isSatisfied) {
                     world[row][col] = null;
                 }
             }
@@ -159,7 +165,7 @@ public class Neighbours extends Application {
                 }
                 else {
 
-                    if (act.isSatisfied == false) {
+                    if (!act.isSatisfied) {
 
                         if (act.color == Color.BLUE){
                             blue++;
@@ -175,8 +181,10 @@ public class Neighbours extends Application {
             }
 
         }
-        int available = empty - red - blue;
-        return new int[] {red, blue, available};
+        //Number of empty squares left after we move all our dissatisfied actors
+        //(This is prior to clearing the unsatisfied actors)
+        int remainingNull = empty - red - blue;
+        return new int[] {red, blue, remainingNull};
         
     }
 
