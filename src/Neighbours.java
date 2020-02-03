@@ -185,7 +185,7 @@ public class Neighbours extends Application {
         //(This is prior to clearing the unsatisfied actors)
         int remainingNull = empty - red - blue;
         return new int[] {red, blue, remainingNull};
-        
+
     }
 
     double scanNeighbours(int actorRow, int actorCol, Actor[][] world){
@@ -206,9 +206,7 @@ public class Neighbours extends Application {
                 if (world[row][col].color == actorColor) {
                     friends++;
                 }
-                if (world[row][col].color == Color.BLUE || world[row][col].color == Color.RED) {
-                    numAct++;
-                }
+                numAct++;
 
             }
 
